@@ -1,135 +1,116 @@
-## 🚀 Tecnologias Utilizadas
+# 🧠 Conception — Arquitetura e Decisões Técnicas do Sistema de Agentes
 
-- **Bootstrap 5** - Framework CSS para layout responsivo
-- **HTML5** - Estrutura semântica moderna
-- **CSS3** - Estilização customizada com custom properties
-- **JavaScript ES6+** - Interatividade e funcionalidades dinâmicas
-- **Font Awesome** - Ícones vetoriais
+**Metadados do Documento:**
+- **Versão:** 1.2
+- **Data de Atualização:** 2025-01-25
+- **Autor:** StatesMedia Team
+- **Tipo:** Documentação Técnica de Arquitetura
 
-## 📁 Estrutura do Projeto
+---
+
+## 1. Escolha do LLM
+
+O sistema utiliza dois modelos de linguagem principais: **GPT-5-mini** (modelo primário) e **GPT-4.1-mini** (fallback).
+
+### GPT-5-mini (principal)
+
+É o modelo padrão para a maioria das tarefas de raciocínio, geração e análise. Foi configurado com **reasoning effort = low**, garantindo **baixa latência**, **menor custo por requisição** e ótimo equilíbrio entre contexto e coerência textual.
+
+Sua janela de contexto de **30.000 tokens** permite processar PDFs extensos sem fragmentação excessiva. Ele foi escolhido por oferecer o melhor **custo-benefício** entre profundidade analítica e tempo de resposta, sendo ideal para os agentes **Engenheiro de Big Idea**, **Estrategista de Otimização** e **Avaliador E5**.
+
+### GPT-4.1-mini (fallback)
+
+Atua como reserva automática quando há saturação de chamadas ou necessidade de dupla validação semântica. O modelo se destaca pelo balanceamento entre **custo, velocidade e qualidade de instrução**, oferecendo alta confiabilidade e respostas consistentes em fluxos críticos (como os agentes **Crítico de Aprovação** e **Orquestrador**).
+
+Seu comportamento previsível e estável é essencial para manter a coerência entre as etapas de análise e síntese do JSON final.
+
+Essa combinação de LLMs proporciona **redundância inteligente** e **otimização de custos**, mantendo o desempenho consistente mesmo em execuções paralelas no n8n.
+
+---
+
+## 2. Escolha da Base de Dados Vetorial
+
+A base de conhecimento utiliza **Supabase com extensão pgvector**.
+
+### Justificativas técnicas:
+
+- **Integração nativa com PostgreSQL**, facilitando a execução de queries híbridas entre dados estruturados e embeddings vetoriais.
+- Suporte à função **ai_match_documents**, que realiza busca semântica direta e eficiente, sem dependência de serviços externos.
+- **Segurança reforçada via Row Level Security (RLS)** e autenticação nativa da Supabase.
+- **Compatibilidade total com fluxos automatizados do n8n**, permitindo consultas SQL ou REST em tempo real.
+- **Custos previsíveis e escalabilidade horizontal** — diferentemente de alternativas como Pinecone (custo variável) ou ChromaDB (persistência limitada).
+
+---
+
+## 3. Arquitetura Geral — Fluxo de Dados
+
+O sistema adota uma **arquitetura multiagente orquestrada via n8n**, com fluxo linear e pontos de iteração entre os agentes cognitivos.
 
 ```
-StatesMedia/
-├── index.html              # Página principal
-├── css/
-│   └── styles.css          # Estilos customizados
-├── js/
-│   └── script.js           # Funcionalidades JavaScript
-├── README.md               # Documentação do projeto
-└── WorkflowToddBrown.json  # Arquivo de configuração existente
+Usuário → Upload/Link PDF → Extração (n8n) → Vetorização (Supabase) → 
+Agentes (GPT-5-mini / 4.1-mini) → Síntese JSON → Supabase
 ```
 
-## ✨ Funcionalidades
+### Etapas Detalhadas
 
-### 🎨 Interface
-- **Design Responsivo**: Adaptável a todos os dispositivos
-- **Tema Escuro/Claro**: Alternância entre temas com persistência local
-- **Animações Suaves**: Transições CSS e efeitos visuais
-- **Cards Interativos**: Efeitos hover e animações de entrada
+#### Recepção do briefing (PDF)
+O arquivo é baixado via **HTTP** (se for link do Google Drive) ou enviado diretamente pela **interface**.
+O nó **"Extract PDF"** converte o conteúdo em texto bruto e metadados (título, tópicos, sumário, etc.).
 
-### 🔍 Navegação
-- **Menu Lateral**: Navegação intuitiva entre seções
-- **Busca em Tempo Real**: Sistema de busca com destaque de termos
-- **Scroll Suave**: Navegação fluida entre seções
-- **Indicadores Visuais**: Estados ativos e feedback visual
+#### Pré-processamento
+O texto é normalizado, tokenizado e dividido em blocos de até **30.000 tokens**, compatíveis com o limite do GPT-5-mini.
+Os trechos são então vetorizados e armazenados na Supabase.
 
-### 🛠️ Funcionalidades JavaScript
-- **Navegação Dinâmica**: Troca de conteúdo sem recarregar página
-- **Sistema de Busca**: Filtragem de conteúdo em tempo real
-- **Gerenciamento de Temas**: Persistência de preferências
-- **Utilitários**: Funções para clipboard, notificações, validações
+#### Distribuição entre Agentes
+- **Orquestrador:** centraliza o fluxo, gerencia chamadas e consolida resultados.
+- **Engenheiro de Big Idea:** identifica o conceito-núcleo e traduz a intenção estratégica.
+- **Estrategista de Otimização:** refina estrutura, adiciona métricas e melhora legibilidade.
+- **Crítico de Aprovação:** realiza a revisão técnica, coerência textual e aderência ao padrão.
+- **Avaliador E5:** aplica a matriz de avaliação (Eficiência, Estilo, Estratégia, Estrutura e Espírito).
 
-## 🎯 Seções Disponíveis
+#### Consulta à Base Vetorial (RAG)
+Cada agente consulta a Supabase via função **match_documents**, que retorna os trechos mais semanticamente relevantes.
+Os resultados são inseridos no **prompt context** de cada agente, aprimorando precisão e contextualização.
 
-1. **Visão Geral** - Informações gerais e estatísticas do projeto
-2. **Arquitetura** - Estrutura técnica e tecnologias utilizadas
-3. **Componentes** - Documentação dos componentes UI e funcionalidades
-4. **API Reference** - Métodos e utilitários disponíveis
-5. **Deploy** - Instruções de configuração e implantação
-6. **Equipe** - Informações sobre os membros da equipe
-7. **Changelog** - Histórico de versões e atualizações
+#### Fusão dos Resultados
+As respostas dos agentes são retornadas ao **Orquestrador**, que:
+- Verifica coerência e sobreposição de ideias.
+- Resolve divergências.
+- Consolida tudo em um **JSON final padronizado** com campos:
 
-## 🚀 Como Usar
-
-### Instalação Local
-1. Clone ou baixe os arquivos do projeto
-2. Abra o arquivo `index.html` em um navegador web
-3. Ou configure um servidor web local apontando para a pasta do projeto
-
-### Servidor Web
-```bash
-# Exemplo com Python
-python -m http.server 8000
-
-# Exemplo com Node.js (http-server)
-npx http-server
-
-# Exemplo com PHP
-php -S localhost:8000
-```
-
-## 🎨 Personalização
-
-### Cores e Temas
-As cores principais podem ser modificadas no arquivo `css/styles.css`:
-
-```css
-:root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    /* ... outras variáveis */
+```json
+{
+  "big_idea": "...",
+  "otimizacao": "...",
+  "critica": "...",
+  "avaliacao_e5": "..."
 }
 ```
 
-### Adicionando Novas Seções
-1. Adicione um novo link no menu lateral (`index.html`)
-2. Crie a seção correspondente no conteúdo principal
-3. Implemente a lógica de navegação no `script.js`
+O JSON é armazenado na Supabase e disponibilizado via API ou dashboard.
 
-## 📱 Responsividade
+---
 
-O projeto é totalmente responsivo e funciona em:
-- 📱 Dispositivos móveis (320px+)
-- 📱 Tablets (768px+)
-- 💻 Desktops (992px+)
-- 🖥️ Telas grandes (1200px+)
+## 4. Stack Resumida
 
-## 🔧 API JavaScript
+| Camada | Tecnologia | Função Principal |
+|--------|------------|------------------|
+| **Entrada** | HTTP / Google Drive API | Recepção do briefing |
+| **Processamento** | n8n Extract PDF | Conversão de PDF em texto |
+| **Vetorização** | Supabase + pgvector | Armazenamento semântico |
+| **Agentes** | GPT-5-mini (low reasoning), GPT-4.1-mini (fallback) | Raciocínio e análise |
+| **Orquestração** | n8n | Controle de fluxo entre agentes |
+| **Persistência** | Supabase PostgreSQL | Armazenamento de resultados |
+| **Saída** | JSON estruturado | Integração com painéis e relatórios |
 
-### Utilitários Disponíveis
+---
 
-```javascript
-// Copiar texto para clipboard
-ProjectUtils.copyToClipboard('Texto para copiar');
+## 5. Conclusão
 
-// Exibir notificações
-ProjectUtils.showNotification('Mensagem', 'success');
+A arquitetura privilegia **eficiência, resiliência e escalabilidade**.
 
-// Formatar datas
-ProjectUtils.formatDate(new Date());
+O uso do **GPT-5-mini** como agente principal garante respostas rápidas e coerentes com baixo custo computacional, enquanto o **GPT-4.1-mini** oferece redundância e estabilidade em cenários críticos.
 
-// Validar email
-ProjectUtils.validateEmail('email@exemplo.com');
-```
+A integração com **Supabase** fornece um backend vetorial unificado, simplificando o RAG e permitindo rastreabilidade completa dos dados.
 
-## 🎯 Recursos Especiais
-
-- **Busca Inteligente**: Busca em tempo real com destaque de termos
-- **Persistência de Estado**: Tema e preferências salvos localmente
-- **Animações Performáticas**: Usando CSS transforms e transitions
-- **Acessibilidade**: Suporte a leitores de tela e navegação por teclado
-- **SEO Friendly**: Estrutura semântica e meta tags otimizadas
-
-## 🔄 Atualizações Futuras
-
-- [ ] Sistema de comentários
-- [ ] Exportação para PDF
-- [ ] Modo de impressão otimizado
-- [ ] Integração com APIs externas
-- [ ] Sistema de versionamento de documentos
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
-
+O resultado é um **ecossistema de agentes modular, auditável e economicamente otimizado**, ideal para aplicações de análise automatizada de documentos.
