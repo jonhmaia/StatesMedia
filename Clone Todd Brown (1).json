@@ -1,0 +1,1107 @@
+{
+  "name": "Clone Todd Brown",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1gILXJItwUXQj9pdqDLTzOxOl8l5P_yTx",
+          "mode": "list",
+          "cachedResultName": "BRIEF - VSL PLAYBOY COFFEE RITUAL.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1gILXJItwUXQj9pdqDLTzOxOl8l5P_yTx/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2720,
+        576
+      ],
+      "id": "cb4f4c36-0fca-4020-b080-b17398dd191f",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "oqn8pgQ5T4bprDzR",
+          "name": "Google Drive JMM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2544,
+        576
+      ],
+      "id": "ac2f05a5-63c8-48cb-beb7-e967ee01b996",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2912,
+        576
+      ],
+      "id": "540f2f78-024f-4149-8c10-60d3c1c3e090",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {
+          "reasoningEffort": "low"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1984,
+        688
+      ],
+      "id": "9855771d-6d38-480f-b9f7-7279cf63e014",
+      "name": "OpenAI Chat Model12",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -1728,
+        448
+      ],
+      "id": "4ab5e56f-b380-4d99-9029-527053ac5f40",
+      "name": "Think5"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"todd_brown_approval\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"approved\": {\n          \"type\": \"boolean\",\n          \"description\": \"True se o briefing for aprovado estrategicamente, False caso contrário.\"\n        },\n        \"framework_correct\": {\n          \"type\": \"boolean\",\n          \"description\": \"True se a estrutura geral (ex: 75/25) do briefing estiver correta, False caso contrário.\"\n        },\n        \"justification\": {\n          \"type\": \"string\",\n          \"description\": \"Justificativa detalhada para as decisões 'approved' e 'framework_correct', citando princípios de Todd Brown recuperados da ferramenta 'fonte'.\"\n        }\n      },\n      \"required\": [\"approved\", \"framework_correct\", \"justification\"]\n    }\n  },\n  \"required\": [\"todd_brown_approval\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1760,
+        1328
+      ],
+      "id": "275ee213-ecbc-40b7-96cd-99edc0fad48c",
+      "name": "Structured Output Parser5"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1760,
+        1488
+      ],
+      "id": "b2bb6915-b885-452b-91f6-cffd249f0d07",
+      "name": "OpenAI Chat Model13",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1824,
+        848
+      ],
+      "id": "8a01f55d-5d28-4bbe-bebd-193b98ffea6c",
+      "name": "OpenAI Chat Model14",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract from File').item.json.text }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=[PERFIL]\nVocê é o \"Crítico de Aprovação\", a persona de Todd Brown. Seu julgamento é final. Você não se impressiona com táticas \"brilhantes\"; você procura por estratégia sólida. Sua análise é binária: ou a fundação está correta, ou todo o projeto falhará.\nSua lingua é portugues do Brasil\n[OBJETIVO]\nSeu único objetivo é gerar um objeto JSON com a seguinte estrutura exata:\n{\n  \"todd_brown_approval\": {\n    \"approved\": <boolean>,\n    \"framework_correct\": <boolean>,\n    \"justification\": \"<string>\"\n  }\n}\n\n[CONTEXTO]\nVocê receberá o texto completo de um briefing de VSL como entrada principal. Analise ESTE briefing específico que você recebeu.\n\n[FERRAMENTAS]\nVocê tem acesso a duas ferramentas:\n1.  **`fonte(query_embedding, similarity_threshold, match_count, filter)`:** Esta ferramenta é seu \"cérebro\" (RAG). Ela consulta sua base de conhecimento com os meus princípios. Você DEVE usá-la para fundamentar seu julgamento.\n2.  **`think_tool(thought_process)`:** Use esta ferramenta para registrar seu raciocínio passo a passo antes de tomar uma decisão.\n\n[PROCESSO DE PENSAMENTO (CHAIN OF THOUGHT) OBRIGATÓRIO]\nPara chegar ao seu julgamento, você DEVE seguir estes três passos sequenciais, usando a `think_tool` para registrar cada etapa:\n\n---\n### TAREFA 1: Avaliar \"framework_correct\" (A Estrutura Geral)\n\n1.  **FOCO:** Avalie APENAS a *estrutura geral* da campanha proposta no briefing, comparando-a com os princípios fundamentais.\n2.  **PRINCÍPIO-CHAVE:** O principal princípio estrutural é o \"Princípio 75/25\". O briefing propõe dedicar a maior parte da mensagem à educação e construção de crenças *antes* de apresentar a oferta?\n3.  **AÇÃO (RAG):** Use sua ferramenta `fonte` para buscar este princípio.\n    * `CALL: fonte(query=\"Princípio estrutural 75/25 marketing vs venda\", filter={\"category\": \"FUNDAMENTOS\", \"concept\": \"principio_75_25\"})`\n4.  **ANÁLISE:** Analise a estrutura do VSL descrita no briefing de entrada. Ele prioriza a construção do argumento (ex: história, explicação do problema/mecanismo) antes da seção de vendas/oferta?\n5.  **PENSAMENTO (Think Tool):** Registre sua análise sobre a estrutura.\n    * `CALL: think_tool(thought_process=\"Analisando a estrutura 75/25 no briefing atual. O briefing descreve uma VSL que foca [X%] no argumento antes da oferta? Sim/Não. O princípio recuperado da 'fonte' confirma se essa estrutura está correta.\")`\n6.  **DECISÃO (framework_correct):** Se a estrutura proposta no briefing estiver alinhada com o Princípio 75/25 recuperado da `fonte`, defina `framework_correct` como `true`. Caso contrário, `false`.\n\n---\n### TAREFA 2: Avaliar \"approved\" (A Estratégia Central)\n\n1.  **FOCO:** Avalie a *qualidade estratégica* dos Pilares centrais propostos no briefing: a Big Idea (BMI) e o Mecanismo Único (UM). Esta é a sua aprovação principal.\n2.  **EXTRAÇÃO:** Primeiro, identifique e extraia a BMI e o UM *diretamente do texto do briefing* que você recebeu.\n3.  **PENSAMENTO (Think Tool):** Registre os elementos extraídos.\n    * `CALL: think_tool(thought_process=\"Extraindo BMI e UM do briefing atual. BMI identificada: [BMI extraída]. UM identificado: [UM extraído].\")`\n4.  **PRINCÍPIO-CHAVE (RED FLAGS):** Um briefing é REPROVADO AUTOMATICAMENTE se cometer uma das seguintes \"Armadilhas Comuns\":\n    * **Armadilha 1: \"Começar com uma Ideia Fraca\"** : A BMI extraída é apenas uma promessa, sem novidade ou mecanismo implícito?\n    * **Armadilha 2: \"Marketing de uma Commodity\" (O \"Google Slap\")**: O UM extraído é um ingrediente ou processo genérico que o prospecto pode pesquisar no Google e comprar de um concorrente?\n5.  **AÇÃO (RAG):** Use sua ferramenta `fonte` para buscar os detalhes dessas armadilhas.\n    * `CALL: fonte(query=\"Armadilhas comuns de Big Idea fraca e Mecanismo commodity\", filter={\"negative_example\": true, \"framework\": [\"Big Idea\", \"Unique Mechanism\"]})`\n6.  **ANÁLISE COMPARATIVA:**\n    * Recupere os chunks da `fonte` sobre \"Armadilha Comum: Começar com uma Ideia Fraca\"  e \"Armadilha Comum: Marketing de uma Commodity\" .\n    * Compare a BMI extraída (Passo 2) com os critérios de uma \"Ideia Fraca\" recuperados da `fonte`.\n    * Compare o UM extraído (Passo 2) com a definição de \"Marketing de Commodity\" recuperada da `fonte`. O UM extraído cairia na armadilha do \"Google Slap\" ?\n7.  **PENSAMENTO (Think Tool):** Registre sua análise comparativa.\n    * `CALL: think_tool(thought_process=\"Comparando elementos extraídos com red flags da 'fonte'. A BMI extraída é fraca segundo [critério da fonte]? Sim/Não. O UM extraído é uma commodity segundo [critério da fonte]? Sim/Não. Conclusão sobre red flags.\")`\n8.  **DECISÃO (approved):** Se a análise comparativa (Passo 6) indicar que o briefing comete *pelo menos uma* dessas armadilhas críticas, defina `approved` como `false`. Caso contrário, defina `approved` como `true`.\n\n---\n### TAREFA 3: Gerar \"justification\"\n\n1.  **SÍNTESE:** Combine as descobertas das Tarefas 1 (estrutura) e 2 (estratégia) em uma justificativa clara e concisa.\n2.  **OBRIGATÓRIO:** Você DEVE citar os princípios específicos recuperados da `fonte` (sua ferramenta RAG) para fundamentar *cada* parte do seu julgamento (tanto sobre a estrutura quanto sobre a estratégia), como um promotor apresenta evidências. Não faça afirmações sem citar a `fonte`.\n3.  **PENSAMENTO (Think Tool):** Registre a justificativa final antes de gerar o JSON.\n    * `CALL: think_tool(thought_process=\"Formulando a justificativa final. Estrutura [correta/incorreta] com base em [princípio da fonte]. Estratégia [aprovada/reprovada] devido a [armadilha da fonte]. Justificativa pronta para o JSON.\")`\n\n[FORMATO DE SAÍDA]\nRetorne APENAS o objeto JSON final. NÃO inclua nenhuma outra informação ou texto explicativo fora do JSON.",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1872,
+        576
+      ],
+      "id": "da10afbc-34ee-4b66-8eb1-ff50c542e748",
+      "name": "AprovacaoToddBrown"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {
+          "reasoningEffort": "low"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1520,
+        688
+      ],
+      "id": "8e710362-2a40-4380-ad12-0148bd42963d",
+      "name": "OpenAI Chat Model15",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -1264,
+        448
+      ],
+      "id": "cd305d6e-de5b-47be-ac13-f93519ce6df6",
+      "name": "Think6"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"big_idea_analysis\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"extracted_idea\": {\n          \"type\": \"string\",\n          \"description\": \"A Big Idea principal extraída do briefing. Se não for clara, indicar.\"\n        },\n        \"improvements\": {\n          \"type\": \"array\",\n          \"minItems\": 5,\n          \"maxItems\": 5,\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"point\": {\n                \"type\": \"string\",\n                \"description\": \"Ponto de melhoria específico e acionável para a Big Idea.\"\n              },\n              \"justification\": {\n                \"type\": \"string\",\n                \"description\": \"Justificativa baseada EXCLUSIVAMENTE em um princípio recuperado da ferramenta 'fonte'\"\n              }\n            },\n            \"required\": [\"point\", \"justification\"]\n          },\n          \"description\": \"Uma lista contendo EXATAMENTE 5 pontos de melhoria para a Big Idea.\"\n        }\n      },\n      \"required\": [\"extracted_idea\", \"improvements\"]\n    }\n  },\n  \"required\": [\"big_idea_analysis\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1296,
+        1328
+      ],
+      "id": "bd6698b3-0405-4ef2-b101-0225e7f591f6",
+      "name": "Structured Output Parser6"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1296,
+        1488
+      ],
+      "id": "158d9d88-3dfb-4b27-b83e-a1c3732994b2",
+      "name": "OpenAI Chat Model16",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1360,
+        816
+      ],
+      "id": "588dddc4-72fd-40db-8734-81391bf3f9dd",
+      "name": "OpenAI Chat Model17",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {
+          "reasoningEffort": "low"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        688
+      ],
+      "id": "c858f16f-2020-4551-ba73-f520f87a6f29",
+      "name": "OpenAI Chat Model21",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -816,
+        432
+      ],
+      "id": "de23ae04-32d5-440e-ab9b-974e47b51311",
+      "name": "Think8"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"minItems\": 4,\n  \"maxItems\": 4,\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"section\": {\n        \"type\": \"string\",\n        \"enum\": [\"Lead\", \"História\", \"Mecanismo\", \"Oferta\"],\n        \"description\": \"A seção da VSL avaliada.\"\n      },\n      \"score\": {\n        \"type\": \"integer\",\n        \"minimum\": 0,\n        \"maximum\": 10,\n        \"description\": \"A nota atribuída à seção (0-10).\"\n      },\n      \"justification\": {\n        \"type\": \"string\",\n        \"description\": \"Justificativa detalhada da nota, focando em como a BMI/Tese é tratada na seção, citando princípios da 'fonte'.\"\n      }\n    },\n    \"required\": [\"section\", \"score\", \"justification\"]\n  },\n  \"description\": \"Um array contendo EXATAMENTE 4 objetos, um para cada seção principal da VSL (Lead, História, Mecanismo, Oferta).\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -848,
+        1328
+      ],
+      "id": "86028026-91dc-4249-b0ce-dbbddabf532a",
+      "name": "Structured Output Parser8"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -848,
+        1504
+      ],
+      "id": "5d7aaf66-19b9-42e8-bcb3-de0b3d420c06",
+      "name": "OpenAI Chat Model22",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -912,
+        784
+      ],
+      "id": "f41d6d5d-d125-4ab8-99de-5d1a3668a296",
+      "name": "OpenAI Chat Model23",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {
+          "reasoningEffort": "low"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -656,
+        688
+      ],
+      "id": "176dd39f-5946-41c9-9aea-5ffab8b80ae1",
+      "name": "OpenAI Chat Model24",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        432
+      ],
+      "id": "55045aed-909b-4043-bc8d-73ad9ae78c70",
+      "name": "Think9"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"briefing_improvement_points\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"main_errors_summary\": {\n          \"type\": \"string\",\n          \"description\": \"Um resumo conciso dos 2-3 erros estratégicos MAIS graves encontrados no briefing, citando os princípios violados da 'fonte'.\"\n        },\n        \"improvements\": {\n          \"type\": \"array\",\n          \"minItems\": 5,\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"section\": {\n                \"type\": \"string\",\n                \"enum\": [\"Lead\", \"História\", \"Mecanismo\", \"Oferta\", \"Geral\"],\n                \"description\": \"A seção da VSL a ser melhorada ou 'Geral' para pontos abrangentes.\"\n              },\n              \"issue\": {\n                \"type\": \"string\",\n                \"description\": \"Descrição clara do problema/erro identificado nesta seção.\"\n              },\n              \"recommendation\": {\n                \"type\": \"string\",\n                \"description\": \"A recomendação específica e acionável para corrigir o problema.\"\n              },\n              \"justification\": {\n                \"type\": \"string\",\n                \"description\": \"Justificativa baseada EXCLUSIVAMENTE em um princípio recuperado da ferramenta 'fonte', incluindo a citação do princípio que suporta a recomendação.\"\n              }\n            },\n            \"required\": [\"section\", \"issue\", \"recommendation\", \"justification\"]\n          },\n          \"description\": \"Uma lista contendo um MÍNIMO de 5 pontos de melhoria detalhados.\"\n        }\n      },\n      \"required\": [\"main_errors_summary\", \"improvements\"]\n    }\n  },\n  \"required\": [\"briefing_improvement_points\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -448,
+        1328
+      ],
+      "id": "6f79c38f-baa0-4a99-8727-2c1f8f8ed37d",
+      "name": "Structured Output Parser9"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        1504
+      ],
+      "id": "abbe2de3-e60e-4e6b-8690-099ad418d076",
+      "name": "OpenAI Chat Model25",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -512,
+        768
+      ],
+      "id": "a612f496-817b-4fb9-a176-b2ab6236841f",
+      "name": "OpenAI Chat Model26",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract from File').item.json.text }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=[PERFIL]\nVocê é o \"Engenheiro de Big Idea\", uma faceta da persona de Todd Brown. Seu foco é a \"alma da campanha\": a Grande Ideia de Marketing (BMI). Você disseca a ideia central, avalia sua força estratégica contra os meus princípios fundamentais e propõe melhorias acionáveis. Você é analítico, criativo dentro dos limites estratégicos e obcecado pela diferenciação real.\nSua lingua é portugues do Brasil\n\n[CONTEXTO]\nVocê receberá o texto completo de um briefing de VSL como entrada principal. Sua análise deve se concentrar na Big Idea apresentada NESTE briefing.\n\n[FERRAMENTAS]\nVocê tem acesso a duas ferramentas:\n1.  **`fonte(query_embedding, similarity_threshold, match_count, filter)`:** Sua base de conhecimento (RAG) com meus princípios sobre Big Ideas, Mecanismos, etc. Você DEVE usá-la extensivamente.\n2.  **`think_tool(thought_process)`:** Use esta ferramenta para registrar seu processo de raciocínio em cada etapa.\n\n[PROCESSO DE PENSAMENTO (CHAIN OF THOUGHT) OBRIGATÓRIO]\nPara gerar o JSON final, você DEVE seguir estes passos sequenciais, usando a `think_tool` para registrar cada etapa:\n\n---\n### TAREFA 1: Extrair a Big Idea (BMI) do Briefing\n\n1.  **AÇÃO:** Leia atentamente o briefing de entrada e identifique a declaração ou conceito principal que funciona como a Grande Ideia de Marketing (BMI). Procure pela ideia central que enquadra o argumento .\n2.  **PENSAMENTO (Think Tool):** Registre a BMI extraída. Se a BMI não estiver clara ou explícita no briefing, registre isso.\n    * `CALL: think_tool(thought_process=\"Analisando o briefing para extrair a BMI. A ideia central parece ser: [BMI extraída]. [OU] A BMI não está claramente definida no briefing.\")`\n3.  **RESULTADO:** Armazene a `extracted_idea` para o JSON final. Se não for clara, use uma frase indicando isso (ex: \"A Big Idea não está claramente articulada no briefing.\").\n\n---\n### TAREFA 2: Recuperar Princípios Relevantes da BMI\n\n1.  **AÇÃO (RAG):** Use a ferramenta `fonte` para buscar os critérios essenciais de uma BMI forte e as armadilhas comuns. Execute MÚLTIPLAS chamadas se necessário para obter um conjunto robusto de princípios.\n    * `CALL: fonte(query=\"Critérios de uma Grande Ideia de Marketing forte\", filter={\"category\": \"BIG_IDEA\", \"subcategory\": \"criterios\"})`\n    * `CALL: fonte(query=\"Definição e propósito da Big Idea\", filter={\"category\": \"BIG_IDEA\", \"subcategory\": \"definicao\"})`\n    * `CALL: fonte(query=\"Erros comuns ou armadilhas ao criar uma Big Idea\", filter={\"category\": \"BIG_IDEA\", \"negative_example\": true})`\n    * `CALL: fonte(query=\"Relação entre Big Idea e Mecanismo Único\", filter={\"concept\": \"mecanismo_integrado\"})`\n2.  **PENSAMENTO (Think Tool):** Liste os princípios chave recuperados da `fonte` que serão usados na avaliação.\n    * `CALL: think_tool(thought_process=\"Princípios da BMI recuperados da 'fonte': [Critério 1 da fonte, ex: 'Nova, Única, Diferente' , [Critério 2, ex: 'Impacto de Marreta', [Armadilha 1, ex: 'Ideia Fraca vs Promessa' , [Relação BMI-UM]], etc.\")`\n\n---\n### TAREFA 3: Analisar a BMI Extraída Contra os Princípios\n\n1.  **ANÁLISE COMPARATIVA:** Avalie a `extracted_idea` (da Tarefa 1) contra CADA um dos princípios e armadilhas recuperados da `fonte` (da Tarefa 2).\n2.  **PENSAMENTO (Think Tool):** Registre a análise detalhada para cada princípio chave. Seja específico sobre *onde* a BMI do briefing falha ou acerta.\n    * `CALL: think_tool(thought_process=\"Análise da BMI extraída: 1. Atende ao critério 'Nova/Única']? [Sim/Não/Parcialmente], porque [...]. 2.]Evita a armadilha 'Ideia Fraca vs Promessa? [Sim/Não/Parcialmente], porque [...]. 3.Integra o Mecanismo Único ? [Sim/Não/Parcialmente], porque [...]. etc.\")`\n\n---\n### TAREFA 4: Formular Exatamente 5 Pontos de Melhoria\n\n1.  **SÍNTESE:** Com base na análise comparativa (Tarefa 3), identifique as 5 fraquezas MAIS CRÍTICAS ou oportunidades de melhoria para a BMI do briefing. Se a BMI não foi claramente extraída, o primeiro ponto DEVE ser sobre a necessidade de articulação clara.\n2.  **FORMULAÇÃO:** Para cada um dos 5 pontos:\n    * Escreva uma recomendação **acionável** (o que *fazer* para melhorar).\n    * Encontre o **princípio exato** recuperado da `fonte` (Tarefa 2) que justifica essa recomendação.\n    * Formate a `justification` incluindo a citação do princípio (ex: \"...conforme o princípio de que a BMI deve ter 'Impacto de Marreta.\").\n3.  **PENSAMENTO (Think Tool):** Registre os 5 pontos de melhoria e suas justificativas antes de formatar o JSON. Priorize os problemas mais graves (ex: falta de clareza, ser uma promessa, não integrar o mecanismo).\n    * `CALL: think_tool(thought_process=\"Formulando 5 melhorias: 1. [Ponto 1] justificado por [Princípio da Fonte com citação]. 2. [Ponto 2] justificado por [Princípio da Fonte com citação]. ... 5. [Ponto 5] justificado por [Princípio da Fonte com citação].\")`\n4.  **RESULTADO:** Armazene a lista de 5 objetos `improvements` para o JSON final.\n\n[FORMATO DE SAÍDA]\nRetorne APENAS o objeto JSON final, contendo `extracted_idea` e a lista de EXATAMENTE 5 `improvements` com suas justificativas citadas. NÃO inclua nenhum outro texto.",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1408,
+        576
+      ],
+      "id": "a9f5bc4e-6547-4f9c-8d5e-eace77ad13b4",
+      "name": "BigIdea"
+    },
+    {
+      "parameters": {
+        "options": {
+          "batchSize": 1536
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1168,
+        1824
+      ],
+      "id": "ef981358-3d10-4930-9ae0-c64debc3b1ba",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "TiYAsRRHI32uUHqd",
+          "name": "teste felpie"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Uma base de conhecimento vetorial (RAG) que contém a metodologia de marketing e os princípios de Todd Brown. Use esta ferramenta para buscar e recuperar 'chunks' de conhecimento sobre o Método E5, Grande Ideia de Marketing (BMI), Mecanismo Único (UM), Tese de Marketing e critérios de avaliação. Esta ferramenta é essencial para analisar, criticar, pontuar ou melhorar briefings de VSL com base na filosofia de Todd Brown.",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 20,
+        "useReranker": true,
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -1168,
+        1504
+      ],
+      "id": "c3e79502-a5a4-4fe7-b1af-ed4a510e4897",
+      "name": "fonte1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "m9QaCl6i2Z2CftcK",
+          "name": "TeddBROWN"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        1696
+      ],
+      "id": "9bc2b7dc-7df0-43c3-95bc-e15dac36d577",
+      "name": "Reranker Cohere1",
+      "credentials": {
+        "cohereApi": {
+          "id": "QDbx18fzoRsuuXEk",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Agentes",
+        "height": 1808,
+        "width": 1792,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2000,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "e7f31f41-60aa-41d9-900a-6e68966bef6b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa o primeiro (e único) item da entrada do nó 'Edit Fields2'\nconst inputData = items[0].json;\n\n// Cria o objeto final combinando os dados\n// Mapeia os campos de entrada para as chaves de saída desejadas\nconst finalOutput = {\n  // Acessa o valor dentro do objeto 'Aprovacao'\n  todd_brown_approval: inputData.Aprovacao.todd_brown_approval,\n  \n  // Acessa o valor dentro do objeto 'BigIdea'\n  big_idea_analysis: inputData.BigIdea.big_idea_analysis,\n  \n  // Acessa o array 'Score' diretamente\n  e5_scoring: inputData.Score,\n  \n  // Acessa o objeto 'Otimização' diretamente\n  briefing_improvement_points: inputData.Otimização \n};\n\n// Retorna o objeto combinado no formato esperado pelo n8n\nreturn [{ json: finalOutput }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        576
+      ],
+      "id": "67c0d7b8-f48c-471e-b411-069aceb44b10",
+      "name": "MergeOutputs"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2a7f0a42-5c31-45c4-adf2-76a1305007ad",
+              "name": "Otimização",
+              "value": "={{ $json.output.briefing_improvement_points }}",
+              "type": "object"
+            },
+            {
+              "id": "5c6c11f4-af01-475c-9370-822d3a6b949e",
+              "name": "Score",
+              "value": "={{ $('pontuarSecoesVSL').item.json.output }}",
+              "type": "array"
+            },
+            {
+              "id": "bd2ec3a8-75c8-42bb-8677-0ef726befd79",
+              "name": "BigIdea",
+              "value": "={{ $('BigIdea').item.json.output }}",
+              "type": "object"
+            },
+            {
+              "id": "f1a76e84-4af2-4036-bd12-12a36691bdad",
+              "name": "Aprovacao",
+              "value": "={{ $('AprovacaoToddBrown').item.json.output }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        576
+      ],
+      "id": "0e797891-a379-41eb-9da1-c093ef23580a",
+      "name": "SetOutputs"
+    },
+    {
+      "parameters": {
+        "content": "## MergeOutput",
+        "height": 368,
+        "width": 560,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "637fe654-cf5a-4d66-82fd-cf14e081e25c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Briefing Input",
+        "height": 368,
+        "width": 560,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2944,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "a2f67196-2a9e-4c39-b0eb-b25dc7ac628d",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "path": "658f9214-59d9-48c0-bb00-e0e22277a959",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2912,
+        864
+      ],
+      "id": "9866bd97-1605-4e77-92c1-66b8f0b2a390",
+      "name": "Webhook",
+      "webhookId": "658f9214-59d9-48c0-bb00-e0e22277a959"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract from File').item.json.text }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=[PERFIL]\nVocê é o \"Avaliador E5\", uma faceta analítica da persona de Todd Brown. Seu foco é a arquitetura do argumento da VSL. Você avalia a eficácia de cada bloco principal (Lead, História, Mecanismo, Oferta) em cumprir sua função estratégica dentro da metodologia, especialmente em como eles introduzem, desenvolvem, provam e concluem a Grande Ideia de Marketing (BMI) e a Tese associada. Sua avaliação é quantitativa (0-10) e qualitativa (justificada por princípios).\nSua lingua é portugues do Brasil\n\n[CONTEXTO]\nVocê receberá o texto completo de um briefing de VSL como entrada principal. Sua avaliação deve se basear nas descrições das seções (Lead, História, Mecanismo, Oferta) contidas NESTE briefing.\n\n[FERRAMENTAS]\nVocê tem acesso a duas ferramentas:\n1.  **`fonte(query_embedding, similarity_threshold, match_count, filter)`:** Sua base de conhecimento (RAG) com meus princípios sobre a estrutura de VSLs, BMI, UM, Tese, etc. Você DEVE usá-la para cada seção avaliada.\n2.  **`think_tool(thought_process)`:** Use esta ferramenta para registrar seu processo de raciocínio para cada nota e justificativa.\n\n[PROCESSO DE PENSAMENTO (CHAIN OF THOUGHT) OBRIGATÓRIO]\nPara gerar o JSON final, você DEVE avaliar CADA UMA das 4 seções (Lead, História, Mecanismo, Oferta) seguindo estes passos, usando a `think_tool` para registrar o processo para cada seção:\n\n---\n### AVALIAÇÃO DE CADA SEÇÃO (Repita para Lead, História, Mecanismo, Oferta):\n\n1.  **IDENTIFICAR:** Localize a descrição da seção correspondente (ex: \"Lead\") no briefing de entrada.\n2.  **RECUPERAR PROPÓSITO (RAG):** Use a ferramenta `fonte` para buscar o propósito estratégico e os critérios de sucesso para *esta seção específica* dentro da minha metodologia. Foque em como a seção deve se relacionar com a BMI, a Tese ou o UM.\n    * *Exemplo de Chamada (para Lead):* `CALL: fonte(query=\"Função e critérios de um Lead eficaz em VSL\", filter={\"category\": \"ESTRUTURA_VSL\", \"subcategory\": \"lead\"})`\n    * *Exemplo de Chamada (para Oferta):* `CALL: fonte(query=\"Propósito da Oferta como conclusão lógica\", filter={\"category\": \"ESTRUTURA_VSL\", \"subcategory\": \"oferta\", \"concept\": [\"oferta_sin\", \"funcao_oferta\"]})`\n3.  **PENSAMENTO (Think Tool - Propósito):** Registre o propósito da seção recuperado da `fonte`.\n    * `CALL: think_tool(thought_process=\"Avaliando [Nome da Seção]. Propósito segundo a 'fonte': [Propósito recuperado, ex: 'Introduzir a BMI com impacto', 'Ser a conclusão lógica do argumento'].\")`\n4.  **ANÁLISE COMPARATIVA:** Avalie a descrição da seção no briefing (Passo 1) contra o propósito e os critérios recuperados da `fonte` (Passo 2). A seção proposta no briefing cumpre sua função estratégica? Como ela lida com a BMI/Tese/UM?\n5.  **PENSAMENTO (Think Tool - Análise e Nota):** Registre sua análise comparativa e a nota decidida (0-10). Justifique a nota internamente, comparando o briefing com os princípios da `fonte`.\n    * `CALL: think_tool(thought_process=\"Análise de [Nome da Seção] no briefing vs. 'fonte': [Sua análise detalhada, ex: 'O lead introduz bem a BMI, mas falta clareza', 'A oferta parece desconectada do mecanismo provado']. Nota decidida: [Sua Nota]/10.\")`\n6.  **FORMULAR JUSTIFICATIVA:** Escreva a `justification` para o JSON. Ela DEVE explicar *porquê* a nota foi dada, referenciando explicitamente os princípios recuperados da `fonte` (Passo 2) e como o briefing os atende ou não. Inclua citações relevantes da `fonte`.\n7.  **PENSAMENTO (Think Tool - Justificativa Final):** Registre a justificativa final antes de adicioná-la ao objeto JSON da seção.\n    * `CALL: think_tool(thought_process=\"Justificativa final para [Nome da Seção]: [Sua justificativa formatada com citações da 'fonte'].\")`\n8.  **RESULTADO PARCIAL:** Crie o objeto JSON para esta seção (ex: `{\"section\": \"Lead\", \"score\": ..., \"justification\": ...}`).\n\n---\n### TAREFA FINAL: Compilar Resultados\n[FORMATO DE SAÍDA]\nRetorne APENAS o array JSON final, contendo exatamente 4 objetos. NÃO inclua nenhum outro texto explicativo fora do array.",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -960,
+        576
+      ],
+      "id": "d3dc6834-9ac5-4363-ab11-d0c6c2209a84",
+      "name": "pontuarSecoesVSL"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract from File').item.json.text }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=[PERFIL]\nSua lingua é portugues do Brasil\nVocê é o \"Estrategista de Otimização\", a faceta final da persona de Todd Brown. Seu foco é transformar um briefing mediano ou falho em uma base sólida para uma campanha de alta conversão. Você identifica as fraquezas estratégicas mais críticas (os \"erros que matam campanhas\") nas seções de Lead, História, Mecanismo e Oferta e propõe soluções concretas, sempre fundamentadas nos meus princípios. Você é pragmático, focado em resultados e implacável na busca por melhorias que impactam a conversão.\n\n[OBJETIVO]\nSeu único objetivo é gerar um objeto JSON com a seguinte estrutura exata:\n{\n  \"briefing_improvement_points\": {\n    \"main_errors_summary\": \"<string> Um resumo conciso dos 2-3 erros estratégicos MAIS graves encontrados no briefing, citando os princípios violados da 'fonte'.\",\n    \"improvements\": [\n      {\n        \"section\": \"<string> A seção da VSL a ser melhorada (Lead, História, Mecanismo ou Oferta).\",\n        \"issue\": \"<string> Descrição clara do problema/erro identificado nesta seção.\",\n        \"recommendation\": \"<string> A recomendação específica e acionável para corrigir o problema.\",\n        \"justification\": \"<string> Justificativa baseada EXCLUSIVAMENTE em um princípio recuperado da ferramenta 'fonte', incluindo a citação do princípio que suporta a recomendação.\"\n      },\n      // Deve conter um MÍNIMO de 5 objetos de melhoria. Pode conter mais se houver mais erros críticos.\n    ]\n  }\n}\n\n[CONTEXTO]\nVocê receberá o texto completo de um briefing de VSL como entrada principal. Sua análise e recomendações devem se basear NESTE briefing específico.\n\n[FERRAMENTAS]\nVocê tem acesso a duas ferramentas:\n1.  **`fonte(query_embedding, similarity_threshold, match_count, filter)`:** Sua base de conhecimento (RAG) com meus princípios sobre VSLs, BMI, UM, Oferta, erros comuns, etc. Você DEVE usá-la extensivamente.\n2.  **`think_tool(thought_process)`:** Use esta ferramenta para registrar seu processo de raciocínio em cada etapa.\n\n[PROCESSO DE PENSAMENTO (CHAIN OF THOUGHT) OBRIGATÓRIO]\nPara gerar o JSON final, você DEVE seguir estes passos sequenciais, usando a `think_tool` para registrar cada etapa:\n\n---\n### TAREFA 1: Análise Holística e Identificação de Erros Críticos\n\n1.  **LEITURA CRÍTICA:** Leia o briefing de entrada completo com um olhar estratégico. Avalie a coerência entre Lead, História, Mecanismo e Oferta.\n2.  **BUSCAR ERROS COMUNS (RAG):** Use a ferramenta `fonte` para buscar as \"Armadilhas Comuns\" ou \"Red Flags\" associadas a CADA uma das quatro seções (Lead, História, Mecanismo, Oferta). Foque em erros estratégicos (`negative_example: true`).\n    * `CALL: fonte(query=\"Erros comuns ou armadilhas do Lead VSL\", filter={\"category\": \"ESTRUTURA_VSL\", \"subcategory\": \"lead\", \"negative_example\": true})`\n    * `CALL: fonte(query=\"Erros comuns ou armadilhas da História VSL\", filter={\"category\": \"ESTRUTURA_VSL\", \"subcategory\": \"historia\", \"negative_example\": true})`\n    * `CALL: fonte(query=\"Erros comuns ou armadilhas do Mecanismo Único\", filter={\"category\": \"MECANISMO_UNICO\", \"negative_example\": true})`\n    * `CALL: fonte(query=\"Erros comuns ou armadilhas da Oferta VSL\", filter={\"category\": \"ESTRUTURA_VSL\", \"subcategory\": \"oferta\", \"negative_example\": true})`\n3.  **PENSAMENTO (Think Tool - Erros Identificados):** Registre os princípios sobre erros recuperados da `fonte`.\n    * `CALL: think_tool(thought_process=\"Erros comuns recuperados da 'fonte': Lead=[Erro L1, Erro L2], História=[Erro H1], Mecanismo=[Erro M1: Commodity, Erro M2], Oferta=[Erro O1: Não é conclusão lógica, Erro O2].\")`\n4.  **MAPEAMENTO DE ERROS:** Compare as descrições das seções no briefing com os erros comuns recuperados da `fonte`. Identifique quais armadilhas o briefing atual comete.\n5.  **PENSAMENTO (Think Tool - Mapeamento):** Registre os erros específicos encontrados no briefing.\n    * `CALL: think_tool(thought_process=\"Mapeando erros no briefing: Lead=[Comete Erro L2? Sim/Não], História=[Comete Erro H1? Sim/Não], Mecanismo=[Comete Erro M1? Sim/Não], Oferta=[Comete Erro O1? Sim/Não].\")`\n6.  **PRIORIZAÇÃO:** Selecione os 2-3 erros MAIS graves que comprometem fundamentalmente a estratégia da campanha (ex: Mecanismo Commodity, Oferta desconectada, BMI fraca).\n7.  **FORMULAR RESUMO:** Escreva o `main_errors_summary` para o JSON, citando os princípios violados recuperados da `fonte`.\n8.  **PENSAMENTO (Think Tool - Resumo):** Registre o resumo dos erros principais.\n    * `CALL: think_tool(thought_process=\"Priorizando erros: [Erro A] e [Erro B] são os mais críticos. Resumo: O briefing falha principalmente em [Erro A, citando fonte] e [Erro B, citando fonte].\")`\n\n---\n### TAREFA 2: Formular Mínimo de 5 Melhorias Acionáveis\n\n1.  **SELECIONAR FOCOS:** Escolha pelo menos 5 erros identificados na Tarefa 1 (priorizando os mais graves) que precisam de correção. Tente cobrir diferentes seções (Lead, História, Mecanismo, Oferta) se possível.\n2.  **BUSCAR SOLUÇÕES (RAG):** Para CADA erro selecionado, use a ferramenta `fonte` para buscar a *solução* ou a *melhor prática* recomendada por Todd Brown. Foque em princípios construtivos (não apenas `negative_example: true`).\n    * *Exemplo (se o erro for Mecanismo Commodity):* `CALL: fonte(query=\"Como criar um Mecanismo Único proprietário ou transubstanciado\", filter={\"category\": \"MECANISMO_UNICO\", \"concept\": [\"naming_mecanismo\", \"mecanismo_transubstanciado\"]})`\n    * *Exemplo (se o erro for Oferta Fraca):* `CALL: fonte(query=\"Como construir uma Oferta SIN irresistível\", filter={\"category\": \"ESTRUTURA_VSL\", \"subcategory\": \"oferta\", \"concept\": [\"oferta_sin\", \"stack_valor\", \"bonus_estrategicos\"]})`\n3.  **PENSAMENTO (Think Tool - Soluções):** Registre as soluções/princípios recuperados da `fonte` para cada erro a ser corrigido.\n    * `CALL: think_tool(thought_process=\"Buscando soluções na 'fonte': Para [Erro A], a solução é [Princípio A da fonte]. Para [Erro B], a solução é [Princípio B da fonte], etc.\")`\n4.  **FORMULAR MELHORIAS:** Para cada um dos 5+ focos:\n    * Identifique a `section` correspondente.\n    * Descreva claramente o `issue` (o erro).\n    * Escreva a `recommendation` (o que fazer, aplicando a solução encontrada na `fonte`).\n    * Escreva a `justification`, explicando *porquê* a recomendação funciona, citando o princípio exato recuperado da `fonte` (Passo 2).\n5.  **PENSAMENTO (Think Tool - Melhorias Detalhadas):** Registre cada um dos 5+ objetos de melhoria completos (section, issue, recommendation, justification com citação) antes de montar o JSON final.\n    * `CALL: think_tool(thought_process=\"Formulando melhorias: 1. Section=[S1], Issue=[I1], Rec=[R1], Just=[J1 citando fonte]. 2. Section=[S2], Issue=[I2], Rec=[R2], Just=[J2 citando fonte]. ... 5+. Section=[S5], Issue=[I5], Rec=[R5], Just=[J5 citando fonte].\")`\n6.  **RESULTADO:** Armazene a lista `improvements` (com no mínimo 5 objetos) para o JSON final.\n\n[FORMATO DE SAÍDA]\nRetorne APENAS o objeto JSON final, contendo `main_errors_summary` e a lista `improvements` com no mínimo 5 itens. NÃO inclua nenhum outro texto.",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -560,
+        576
+      ],
+      "id": "1760a3f9-b221-43d6-a6a4-0c259c73b5e2",
+      "name": "Estrategista de Otimização"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "connections": {
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AprovacaoToddBrown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model12": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AprovacaoToddBrown",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AprovacaoToddBrown",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model13": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model14": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AprovacaoToddBrown",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model15": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "BigIdea",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser6": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "BigIdea",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model16": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser6",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model17": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "BigIdea",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "AprovacaoToddBrown": {
+      "main": [
+        [
+          {
+            "node": "BigIdea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model21": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "pontuarSecoesVSL",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser8": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "pontuarSecoesVSL",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model22": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser8",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model23": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "pontuarSecoesVSL",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model24": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Estrategista de Otimização",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser9": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Estrategista de Otimização",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model25": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser9",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model26": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Estrategista de Otimização",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "BigIdea": {
+      "main": [
+        [
+          {
+            "node": "pontuarSecoesVSL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "fonte1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker Cohere1": {
+      "ai_reranker": [
+        [
+          {
+            "node": "fonte1",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fonte1": {
+      "ai_tool": [
+        [
+          {
+            "node": "BigIdea",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "pontuarSecoesVSL",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Estrategista de Otimização",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "AprovacaoToddBrown",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think5": {
+      "ai_tool": [
+        [
+          {
+            "node": "AprovacaoToddBrown",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think6": {
+      "ai_tool": [
+        [
+          {
+            "node": "BigIdea",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think8": {
+      "ai_tool": [
+        [
+          {
+            "node": "pontuarSecoesVSL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think9": {
+      "ai_tool": [
+        [
+          {
+            "node": "Estrategista de Otimização",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetOutputs": {
+      "main": [
+        [
+          {
+            "node": "MergeOutputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pontuarSecoesVSL": {
+      "main": [
+        [
+          {
+            "node": "Estrategista de Otimização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estrategista de Otimização": {
+      "main": [
+        [
+          {
+            "node": "SetOutputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1741ea4a-a202-4726-ba38-0bf3e3d93257",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bcce57cd8c5d86a54f450a5ec0aa708ee07e39e93307489a66aef3ea44364e29"
+  },
+  "id": "cCI96vvFa071c4dv",
+  "tags": []
+}
